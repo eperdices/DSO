@@ -42,24 +42,6 @@ and use it instead of `PangolinDSOViewer`
 
 Install from [https://github.com/stevenlovegrove/Pangolin](https://github.com/stevenlovegrove/Pangolin)
 
-
-##### ziplib (recommended).
-Used to read datasets with images as .zip, as e.g. in the TUM monoVO dataset. 
-You can compile without this, however then you can only read images directly (i.e., have 
-to unzip the dataset image archives before loading them).
-
-	sudo apt-get install zlib1g-dev
-	cd dso/thirdparty
-	tar -zxvf libzip-1.1.1.tar.gz
-	cd libzip-1.1.1/
-	./configure
-	make
-	sudo make install
-	sudo cp lib/zipconf.h /usr/local/include/zipconf.h   # (no idea why that is needed).
-
-##### sse2neon (required for ARM builds).
-After cloning, just run `git submodule update --init` to include this.  It translates Intel-native SSE functions to ARM-native NEON functions during the compilation process.
-
 #### 2.3 Build
 
 		cd dso
@@ -76,7 +58,7 @@ OpenCV and Pangolin need to be installed.
 Run on a dataset from [https://vision.in.tum.de/mono-dataset](https://vision.in.tum.de/mono-dataset) using
 
 		bin/dso_dataset \
-			files=XXXXX/sequence_XX/images.zip \
+			files=XXXXX/sequence_XX/ \
 			calib=XXXXX/sequence_XX/camera.txt \
 			gamma=XXXXX/sequence_XX/pcalib.txt \
 			vignette=XXXXX/sequence_XX/vignette.png \
@@ -91,7 +73,7 @@ other camera drivers, to use DSO interactively without ROS.
 The format assumed is that of [https://vision.in.tum.de/mono-dataset](https://vision.in.tum.de/mono-dataset).
 However, it should be easy to adapt it to your needs, if required. The binary is run with:
 
-- `files=XXX` where XXX is either a folder or .zip archive containing images. They are sorted *alphabetically*. for .zip to work, need to comiple with ziplib support.
+- `files=XXX` where XXX is a folder archive containing images. They are sorted *alphabetically*.
 
 - `gamma=XXX` where XXX is a gamma calibration file, containing a single row with 256 values, mapping [0..255] to the respective irradiance value, i.e. containing the *discretized inverse response function*. See TUM monoVO dataset for an example.
 
