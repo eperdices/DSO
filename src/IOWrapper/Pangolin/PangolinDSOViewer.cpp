@@ -162,6 +162,8 @@ void PangolinDSOViewer::run()
 	pangolin::Var<double> settings_trackFps("ui.Track fps",0,0,0,false);
 	pangolin::Var<double> settings_mapFps("ui.KF fps",0,0,0,false);
 
+    pangolin::OpenGlMatrix Twc;
+    Twc.SetIdentity();
 
 	// Default hooks for exiting (Esc) and fullscreen (tab).
 	while( !pangolin::ShouldQuit() && running )
@@ -171,6 +173,11 @@ void PangolinDSOViewer::run()
 
 		if(setting_render_display3D)
 		{
+            // Follow camera
+            currentCam->GetCurrentOpenGLCameraMatrix(Twc);
+            Visualization3D_camera.Follow(Twc);
+
+
 			// Activate efficiently by object
 			Visualization3D_display.Activate(Visualization3D_camera);
 			boost::unique_lock<boost::mutex> lk3d(model3DMutex);

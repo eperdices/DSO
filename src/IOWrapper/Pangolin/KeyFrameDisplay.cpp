@@ -399,5 +399,28 @@ void KeyFrameDisplay::drawPC(float pointSize)
 	glPopMatrix();
 }
 
+void KeyFrameDisplay::GetCurrentOpenGLCameraMatrix(pangolin::OpenGlMatrix &M) {
+    Sophus::Matrix4f m = camToWorld.matrix().cast<float>();
+    M.m[0] = m(0, 0);
+    M.m[1] = m(1, 0);
+    M.m[2] = m(2, 0);
+    M.m[3] = m(3, 0);
+
+    M.m[4] = m(0, 1);
+    M.m[5] = m(1, 1);
+    M.m[6] = m(2, 1);
+    M.m[7] = m(3, 1);
+
+    M.m[8] = m(0, 2);
+    M.m[9] = m(1, 2);
+    M.m[10] = m(2, 2);
+    M.m[11] = m(3, 2);
+
+    M.m[12] = m(0, 3);
+    M.m[13] = m(1, 3);
+    M.m[14] = m(2, 3);
+    M.m[15] = m(3, 3);
+}
+
 }
 }

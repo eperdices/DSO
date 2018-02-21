@@ -84,6 +84,9 @@ public:
 	void drawCam(float lineWidth = 1, float* color = 0, float sizeFactor=1);
 	void drawPC(float pointSize);
 
+    // Save current pose into OpenGL Matrix
+    void GetCurrentOpenGLCameraMatrix(pangolin::OpenGlMatrix &M);
+
 	int id;
 	bool active;
 	SE3 camToWorld;
