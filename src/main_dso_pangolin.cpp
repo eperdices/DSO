@@ -56,8 +56,6 @@ std::string gammaCalib = "";
 std::string source = "";
 std::string calib = "";
 double rescale = 1;
-bool reverse = false;
-bool disableROS = false;
 int start=0;
 int end=100000;
 bool prefetch = false;
@@ -67,8 +65,6 @@ bool useSampleOutput=false;
 
 
 int mode=0;
-
-bool firstRosSpin=false;
 
 using namespace dso;
 
@@ -87,7 +83,6 @@ void exitThread()
 	sigIntHandler.sa_flags = 0;
 	sigaction(SIGINT, &sigIntHandler, NULL);
 
-	firstRosSpin=true;
 	while(true) pause();
 }
 
@@ -193,34 +188,12 @@ void parseArgument(char* arg)
 		return;
 	}
 
-
-
-	if(1==sscanf(arg,"noros=%d",&option))
-	{
-		if(option==1)
-		{
-			disableROS = true;
-			disableReconfigure = true;
-			printf("DISABLE ROS (AND RECONFIGURE)!\n");
-		}
-		return;
-	}
-
 	if(1==sscanf(arg,"nolog=%d",&option))
 	{
 		if(option==1)
 		{
 			setting_logStuff = false;
 			printf("DISABLE LOGGING!\n");
-		}
-		return;
-	}
-	if(1==sscanf(arg,"reverse=%d",&option))
-	{
-		if(option==1)
-		{
-			reverse = true;
-			printf("REVERSE!\n");
 		}
 		return;
 	}
@@ -378,27 +351,10 @@ int main( int argc, char** argv )
 	int lstart=start;
 	int lend = end;
 	int linc = 1;
-	if(reverse)
-	{
-		printf("REVERSE!!!!");
-		lstart=end-1;
-		if(lstart >= reader->getNumImages())
-			lstart = reader->getNumImages()-1;
-		lend = start;
-		linc = -1;
-	}
-
-
 
 	FullSystem* fullSystem = new FullSystem();
 	fullSystem->setGammaFunction(reader->getPhotometricGamma());
 	fullSystem->linearizeOperation = (playbackSpeed==0);
-
-
-
-
-
-
 
     IOWrap::PangolinDSOViewer* viewer = 0;
 	if(!disableAllDisplay)

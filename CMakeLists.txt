@@ -15,7 +15,10 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 find_package(SuiteParse REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Boost COMPONENTS system thread)
-find_package(OpenCV REQUIRED)
+find_package(OpenCV 3.0 QUIET)
+if(NOT OpenCV_FOUND)
+ find_package(OpenCV 2.4.3 REQUIRED)
+endif()
 
 # optional libraries
 if(USE_PANGOLIN)
@@ -49,8 +52,8 @@ set(dso_SOURCE_FILES
   ${PROJECT_SOURCE_DIR}/src/util/settings.cpp
   ${PROJECT_SOURCE_DIR}/src/util/Undistort.cpp
   ${PROJECT_SOURCE_DIR}/src/util/globalCalib.cpp
-  ${PROJECT_SOURCE_DIR}/src/IOWrapper/OpenCV/ImageDisplay_OpenCV.cpp
-  ${PROJECT_SOURCE_DIR}/src/IOWrapper/OpenCV/ImageRW_OpenCV.cpp
+  ${PROJECT_SOURCE_DIR}/src/IOWrapper/ImageDisplay.cpp
+  ${PROJECT_SOURCE_DIR}/src/IOWrapper/ImageRW.cpp
 )
 
 include_directories(
@@ -71,12 +74,18 @@ endif ()
 
 # compile main library.
 include_directories( ${CSPARSE_INCLUDE_DIR} ${CHOLMOD_INCLUDE_DIR}) 
-add_library(dso ${dso_SOURCE_FILES} ${dso_pangolin_SOURCE_FILES})
+add_library(dso SHARED ${dso_SOURCE_FILES} ${dso_pangolin_SOURCE_FILES})
+
+LIST(APPEND REQUIRED_LIBRARIES boost_system cxsparse boost_thread ${OpenCV_LIBS})
+if(USE_PANGOLIN)
+	LIST(APPEND REQUIRED_LIBRARIES ${Pangolin_LIBRARIES})
+endif()
+target_link_libraries(dso ${REQUIRED_LIBRARIES})
 
 # build main executable (only if we use Pangolin)
 if (USE_PANGOLIN)
 	message("--- compiling dso_dataset.")
 	add_executable(dso_dataset ${PROJECT_SOURCE_DIR}/src/main_dso_pangolin.cpp )
-    target_link_libraries(dso_dataset dso boost_system cxsparse boost_thread ${Pangolin_LIBRARIES} ${OpenCV_LIBS})
+    target_link_libraries(dso_dataset dso)
 endif()
 

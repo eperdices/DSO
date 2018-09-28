@@ -12,22 +12,15 @@ Get some datasets from [https://vision.in.tum.de/mono-dataset](https://vision.in
 
 	git clone https://github.com/eperdices/DSO
 
-#### 2.1 Required Dependencies
+#### 2.1 Dependencies
 
 ##### suitesparse and eigen3 (required).
 Required. Install with
 
     sudo apt-get install libsuitesparse-dev libeigen3-dev libboost-all-dev
 
-#### 2.2 Optional Dependencies
-
-##### OpenCV (highly recommended).
+##### OpenCV (required).
 Used to read / write / display images.
-OpenCV is **only** used in `IOWrapper/OpenCV/*`. Without OpenCV, respective 
-dummy functions from `IOWrapper/*_dummy.cpp` will be compiled into the library, which do nothing.
-The main binary will not be created, since it is useless if it can't read the datasets from disk.
-Feel free to implement your own version of these functions with your prefered library, 
-if you want to stay away from OpenCV.
 
 Install with
 
@@ -124,7 +117,6 @@ there are many command line options available, see `main_dso_pangolin.cpp`. some
     - `preset=3`: fast settings (800 pts etc.), enforcing 5x real-time execution. WARNING: overwrites image resolution with 424 x 320.
 
 - `nolog=1`: disable logging of eigenvalues etc. (good for performance)
-- `reverse=1`: play sequence in reverse
 - `nogui=1`: disable gui (good for performance)
 - `nomt=1`: single-threaded execution
 - `prefetch=1`: load into memory & rectify all images before running DSO.
@@ -187,7 +179,31 @@ Make sure, the initial camera motion is slow and "nice" (i.e., a lot of translat
 little rotation) during initialization.
 Possibly replace by your own initializer.
 
-### 5 License
+### 5 ROS Execution
+
+### Building the node
+1. Add the path including *ROS/DSO* to the ROS_PACKAGE_PATH environment variable. Replace PATH by the folder where you cloned DSO:
+
+  ```
+  echo "export ROS_PACKAGE_PATH=\$ROS_PACKAGE_PATH:PATH/DSO/ROS" >> ~/.bashrc
+  ```
+
+2. Execute `build_ros.sh` script:
+
+  ```
+  chmod +x build_ros.sh
+  ./build_ros.sh
+  ```
+
+### Running Node
+
+DSO node reads RGB images from topic `/camera/rgb/image_raw`. You will need to add optional parameters (see examples above).
+
+  ```
+  rosrun DSO DSO calib=XXX preset=0 mode=1
+  ```
+
+### 6 License
 DSO was developed at the Technical University of Munich and Intel.
 The open-source version is licensed under the GNU General Public License Version 3 (GPLv3).
 For commercial purposes, we also offer a professional version, see [http://vision.in.tum.de/dso](http://vision.in.tum.de/dso) for

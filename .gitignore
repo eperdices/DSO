@@ -1,8 +1,7 @@
 *.pro
 *.pro.user
 *.pro.user*
-build*
-build-*
+build
 *.o
 *.so
 *.a
